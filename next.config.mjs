@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  // Files in /files are served only via the API download route, never from /public
+}
 
-export default nextConfig;
+export default nextConfig

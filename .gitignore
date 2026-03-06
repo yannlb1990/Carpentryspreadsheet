@@ -34,3 +34,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Product files — never commit paid content to git
+# Upload these via the /admin panel after deploying
+files/*.pdf
+files/*.xlsx
+files/*.xls
