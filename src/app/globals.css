@@ -161,7 +161,7 @@ body  { background: var(--cream); color: var(--ink); line-height: 1.6; }
 .trust-dot { width: 3px; height: 3px; background: rgba(255,255,255,.18); border-radius: 99px; display: inline-block; }
 
 /* Product mockup */
-.hero-visual { position: relative; }
+.hero-visual { position: relative; padding-top: 32px; padding-bottom: 44px; }
 .product-card-mock {
   background: linear-gradient(145deg, #1C1208, #2A1A0E);
   border: 1px solid rgba(196,154,43,.22); border-radius: 26px; padding: 30px;
@@ -209,8 +209,8 @@ body  { background: var(--cream); color: var(--ink); line-height: 1.6; }
   box-shadow: 0 8px 24px rgba(0,0,0,.18);
   display: flex; align-items: center; gap: 10px;
 }
-.float-pill-1 { top: -14px; right: -18px; animation: float 3.2s ease-in-out infinite; }
-.float-pill-2 { bottom: 38px; left: -22px; animation: float 3.2s ease-in-out infinite; animation-delay: 1.6s; }
+.float-pill-1 { top: 4px; right: 16px; animation: float 3.2s ease-in-out infinite; }
+.float-pill-2 { bottom: 4px; left: 16px; animation: float 3.2s ease-in-out infinite; animation-delay: 1.6s; }
 @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
 .pill-icon-wrap { width: 28px; height: 28px; background: var(--cream-dk); border-radius: 8px; display: grid; place-items: center; flex-shrink: 0; }
 .pill-label { font-size: .66rem; color: #888; font-weight: 500; line-height: 1.2; }
