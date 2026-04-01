@@ -1,5 +1,6 @@
 import BuyButton from './BuyButton'
 import ScrollReveal from './ScrollReveal'
+import StickyBuyBar from '@/components/StickyBuyBar'
 
 /* ── JSON-LD STRUCTURED DATA ─────────────────────────────────────────────── */
 const jsonLd = {
@@ -912,6 +913,9 @@ export default function HomePage() {
         </p>
       </section>
 
+      {/* ── STICKY BUY BAR ──────────────────────────────────────────────── */}
+      <StickyBuyBar />
+
       {/* ── FOOTER ──────────────────────────────────────────────────────── */}
       <footer className="site-footer" role="contentinfo">
         <div className="footer-inner">
@@ -926,6 +930,9 @@ export default function HomePage() {
             <div className="footer-links">
               <a href="#pricing">Products</a>
               <a href="#faq">FAQ</a>
+              <a href="/refund">Refund Policy</a>
+              <a href="/terms">Terms</a>
+              <a href="/privacy">Privacy</a>
               <a href="mailto:support@carpentrypro.com.au">Support</a>
             </div>
             <p className="footer-copy">

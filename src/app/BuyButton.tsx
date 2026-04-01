@@ -6,9 +6,10 @@ interface BuyButtonProps {
   productId: string
   label: string
   className?: string
+  style?: React.CSSProperties
 }
 
-export default function BuyButton({ productId, label, className = 'btn-primary' }: BuyButtonProps) {
+export default function BuyButton({ productId, label, className = 'btn-primary', style }: BuyButtonProps) {
   const [loading, setLoading] = useState(false)
 
   async function handleBuy() {
@@ -34,7 +35,7 @@ export default function BuyButton({ productId, label, className = 'btn-primary' 
       onClick={handleBuy}
       disabled={loading}
       className={className}
-      style={{ opacity: loading ? 0.6 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+      style={{ opacity: loading ? 0.6 : 1, cursor: loading ? 'not-allowed' : 'pointer', ...style }}
     >
       {loading ? 'Redirecting…' : label}
     </button>

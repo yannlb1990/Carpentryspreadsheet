@@ -8,6 +8,16 @@ interface FileStatus {
   'pricing_guide.pdf': boolean
 }
 
+interface Order {
+  id: string
+  email: string
+  name: string
+  product: string
+  amount: string
+  currency: string
+  created: string
+}
+
 interface SheetConfig {
   estimation: { sheetsUrl: string }
   priceguide: { sheetsUrl: string }
@@ -39,6 +49,9 @@ export default function Dashboard() {
   const [uploadStatus, setUploadStatus] = useState<Record<string, string>>({})
   const [sheetSaveStatus, setSheetSaveStatus] = useState<Record<string, string>>({})
   const [sheetInputs, setSheetInputs] = useState<Record<string, string>>({})
+  const [orders, setOrders] = useState<Order[] | null>(null)
+  const [ordersRevenue, setOrdersRevenue] = useState<string>('0.00')
+  const [ordersLoading, setOrdersLoading] = useState(false)
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
 
   useEffect(() => {
@@ -54,6 +67,16 @@ export default function Dashboard() {
         bundle: config.bundle?.sheetsUrl || '',
       })
     })
+
+    // Load orders
+    setOrdersLoading(true)
+    fetch('/api/admin/orders')
+      .then((r) => r.json())
+      .then((data) => {
+        setOrders(data.orders ?? [])
+        setOrdersRevenue(data.totalRevenue ?? '0.00')
+      })
+      .finally(() => setOrdersLoading(false))
   }, [])
 
   async function handleUpload(filename: string) {
@@ -205,6 +228,65 @@ export default function Dashboard() {
               )
             })}
           </div>
+        </section>
+
+        {/* Section: Orders */}
+        <section style={styles.section}>
+          <h2 style={styles.sectionTitle}>Sales &amp; Orders</h2>
+          <p style={styles.sectionDesc}>
+            Paid orders from Stripe. Showing latest 100.
+          </p>
+
+          {/* Revenue summary */}
+          <div style={{ display: 'flex', gap: 16, marginBottom: 20, flexWrap: 'wrap' }}>
+            <div style={styles.statCard}>
+              <div style={styles.statNum}>{orders?.length ?? '—'}</div>
+              <div style={styles.statLabel}>Total Orders</div>
+            </div>
+            <div style={styles.statCard}>
+              <div style={styles.statNum}>AU${ordersRevenue}</div>
+              <div style={styles.statLabel}>Total Revenue</div>
+            </div>
+          </div>
+
+          {ordersLoading ? (
+            <p style={{ fontSize: 14, color: '#aaa' }}>Loading orders…</p>
+          ) : !orders || orders.length === 0 ? (
+            <p style={{ fontSize: 14, color: '#aaa' }}>No paid orders yet.</p>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={styles.table}>
+                <thead>
+                  <tr>
+                    <th style={styles.th}>Date</th>
+                    <th style={styles.th}>Customer</th>
+                    <th style={styles.th}>Email</th>
+                    <th style={styles.th}>Product</th>
+                    <th style={styles.th}>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.map((o) => (
+                    <tr key={o.id} style={{ borderBottom: '1px solid #f0ebe4' }}>
+                      <td style={styles.td}>
+                        {new Date(o.created).toLocaleDateString('en-AU', {
+                          day: '2-digit', month: 'short', year: 'numeric',
+                        })}
+                      </td>
+                      <td style={styles.td}>{o.name}</td>
+                      <td style={styles.td}>{o.email}</td>
+                      <td style={styles.td}>
+                        <span style={styles.productPill}>{o.product}</span>
+                      </td>
+                      <td style={{ ...styles.td, fontWeight: 700, color: '#1a9a4a' }}>
+                        {o.currency} ${o.amount}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </section>
 
         {/* Section: How it works */}
@@ -403,5 +485,55 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '14px',
     color: '#555',
     lineHeight: 2,
+  },
+  statCard: {
+    background: '#FAF6F0',
+    border: '1px solid #e7ddd0',
+    borderRadius: 10,
+    padding: '16px 24px',
+    minWidth: 140,
+  },
+  statNum: {
+    fontSize: 22,
+    fontWeight: 800,
+    color: '#2A1A0E',
+    letterSpacing: '-0.5px',
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#888',
+    marginTop: 3,
+    fontWeight: 500,
+  },
+  table: {
+    width: '100%',
+    borderCollapse: 'collapse' as const,
+    fontSize: 13,
+  },
+  th: {
+    textAlign: 'left' as const,
+    padding: '8px 12px',
+    fontSize: 11,
+    fontWeight: 700,
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.07em',
+    color: '#888',
+    borderBottom: '2px solid #e7ddd0',
+    whiteSpace: 'nowrap' as const,
+  },
+  td: {
+    padding: '10px 12px',
+    color: '#333',
+    verticalAlign: 'middle' as const,
+    fontSize: 13,
+  },
+  productPill: {
+    display: 'inline-block',
+    background: '#f5edd8',
+    color: '#B18B2B',
+    fontSize: 11,
+    fontWeight: 700,
+    padding: '2px 8px',
+    borderRadius: 99,
   },
 }
